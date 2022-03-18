@@ -87,7 +87,8 @@ jobs:
         helm registry login ${{ env.containerRegistry }} --username ${{ secrets.ACR_USERNAME }} --password ${{ secrets.ACR_PASSWORD }}
         helm chart push ${{ env.containerRegistry }}/helm/content-web:v${{ env.tag }}
       env:
-        HELM_EXPERIMENTAL_OCI: 1  build-and-push-helm-chart:
+        HELM_EXPERIMENTAL_OCI: 1  
+  build-and-push-helm-chart:
     name: Build and Push Helm Chart
     runs-on: ubuntu-latest
     needs: [build-and-publish-docker-image]
