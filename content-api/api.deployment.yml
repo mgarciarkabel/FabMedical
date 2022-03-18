@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: "2022-03-17T19:57:23Z"
+  generation: 1
+  labels:
+    app: api
+  name: api
+  namespace: default
+  resourceVersion: "513011"
+  uid: 8f34b944-624b-490c-b0b4-8598e687556f
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: api
+        name: api
+    spec:
+      containers:
+        image: fabmedicalaaa.azurecr.io/content-api
+        env:
+        - name: MONGODB_CONNECTION
+          valueFrom:
+            secretKeyRef:
+              key: db
+              name: cosmosdb
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 3001
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: api
+        ports:
+        - containerPort: 3001
+          hostPort: 3001
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "1"
+            memory: 128Mi
+        securityContext:
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2022-03-17T19:57:23Z"
+    lastUpdateTime: "2022-03-17T19:57:29Z"
+    message: ReplicaSet "api-7cc5549956" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2022-03-18T15:14:40Z"
+    lastUpdateTime: "2022-03-18T15:14:40Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
